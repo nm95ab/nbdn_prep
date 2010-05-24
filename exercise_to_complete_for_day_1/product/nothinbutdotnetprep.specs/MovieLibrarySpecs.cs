@@ -82,7 +82,7 @@ namespace nothinbutdotnetprep.specs
     {
         static Movie first_movie;
         static Movie second_movie;
-        static IEnumerable<Movie> all_movies;
+        static IEnumerable<Movie> result;
 
         Establish c = () =>
         {
@@ -92,11 +92,11 @@ namespace nothinbutdotnetprep.specs
             movie_collection.add_all(first_movie, second_movie);
         };
 
-        Because b = () => 
-            all_movies = sut.all_movies();
+        Because b = () =>
+            result = sut.all_movies();
 
         It should_receive_a_set_containing_each_movie_in_the_library = () =>
-            all_movies.ShouldContainOnly(first_movie, second_movie);
+            result.ShouldContainOnly(first_movie, second_movie);
     }
 
     [Subject(typeof(MovieLibrary))]
