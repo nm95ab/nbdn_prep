@@ -47,7 +47,7 @@ using nothinbutdotnetprep.tests.utilIty;
  * Develop With Passion!!
  */
 
-namespace nothinbutdotnetprep.tests
+namespace nothinbutdotnetprep.specs
 {
     public abstract class movie_library_concern : Observes<MovieLibrary>
     {
@@ -65,16 +65,16 @@ namespace nothinbutdotnetprep.tests
     {
         static int number_of_movies;
 
+        //arrange
         Establish c = () =>
             movie_collection.add_all(new Movie(), new Movie());
 
+        //act
         Because b = () =>
             number_of_movies = sut.all_movies().Count();
 
-        It should_return_the_number_of_all_movies_in_the_library = () =>
-        {
-            number_of_movies.ShouldEqual(2);
-        };
+        //assert
+        It should_return_the_number_of_all_movies_in_the_library = () => { number_of_movies.ShouldEqual(2); };
     }
 
     [Subject(typeof(MovieLibrary))]
@@ -92,10 +92,11 @@ namespace nothinbutdotnetprep.tests
             movie_collection.add_all(first_movie, second_movie);
         };
 
-        Because b = () => { all_movies = sut.all_movies(); };
+        Because b = () => 
+            all_movies = sut.all_movies();
 
-        It should_receive_a_set_containing_each_movie_in_the_library =
-            () => { all_movies.ShouldContainOnly(first_movie, second_movie); };
+        It should_receive_a_set_containing_each_movie_in_the_library = () =>
+            all_movies.ShouldContainOnly(first_movie, second_movie);
     }
 
     [Subject(typeof(MovieLibrary))]
