@@ -39,11 +39,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="collections\Genre.cs" />
+    <Compile Include="collections\IsInGenre.cs" />
+    <Compile Include="collections\IsPublishedBy.cs" />
     <Compile Include="collections\LazyEnumerable.cs" />
     <Compile Include="collections\Movie.cs" />
     <Compile Include="collections\MovieLibrary.cs" />
     <Compile Include="collections\ProductionStudio.cs" />
     <Compile Include="utility\extensions\EnumerableExtensions.cs" />
+    <Compile Include="utility\searching\AndCriteria.cs" />
+    <Compile Include="utility\searching\BinaryCriteria.cs" />
+    <Compile Include="utility\searching\Criteria.cs" />
+    <Compile Include="utility\searching\CriteriaExtensions.cs" />
+    <Compile Include="utility\searching\NotCriteria.cs" />
+    <Compile Include="utility\searching\OrCriteria.cs" />
+    <Compile Include="utility\searching\PredicateCriteria.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

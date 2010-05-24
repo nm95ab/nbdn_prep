@@ -6,6 +6,8 @@ using Machine.Specifications.DevelopWithPassion.Extensions;
 using Machine.Specifications.DevelopWithPassion.Rhino;
 using nothinbutdotnetprep.collections;
 using nothinbutdotnetprep.tests.utilIty;
+using nothinbutdotnetprep.utility.extensions;
+using nothinbutdotnetprep.utility.searching;
 
 /* The following set of Contexts (TestFixture) are in place to specify the functionality that you need to complete for the MovieLibrary class.
  * MovieLibrary is an aggregate root for the Movie class. it exposes the ability to search,sort, and iterate over all of the movies that it aggregates.
@@ -183,51 +185,71 @@ namespace nothinbutdotnetprep.specs
              * movies using different criteria. Feel free to change/remove explicit methods if you find a way to encompass searching
              * without the need for using explicit methods. For this exercise, no linq queries are allowed!!.*/
 
+        public delegate void MessageGenerator(string message);
+
+        It should_play_around_with_delegates = () =>
+        {
+            MessageGenerator hello = delegate { Console.Out.Write("Hello "); };
+            hello += x => Console.Out.Write("{0} ",x.ToUpper());
+            hello += x => Console.Out.Write("{0} ",x.ToLower());
+
+            Predicate<Movie> is_a_kids_movie = movie => movie.genre == Genre.kids;
+            is_a_kids_movie(new Movie {genre = Genre.action}).ShouldBeFalse();
+            is_a_kids_movie(new Movie {genre = Genre.kids}).ShouldBeTrue();
+
+            hello("JP");
+
+            //Hello JP jp
+        };
+  
         It should_be_able_to_find_all_movies_published_by_pixar = () =>
         {
-            var results = sut.all_movies_published_by_pixar();
+            var criteria = Where<Movie>.has_a(x => x.production_studio).equal_to(ProductionStudio.Pixar);
+            var results = sut.all_movies().all_items_matching(criteria);
 
             results.ShouldContainOnly(cars, a_bugs_life);
         };
 
         It should_be_able_to_find_all_movies_published_by_pixar_or_disney = () =>
         {
-            var results = sut.all_movies_published_by_pixar_or_disney();
+            var results = sut.all_movies().all_items_matching(Movie.is_published_by_pixar_or_disney());
 
             results.ShouldContainOnly(a_bugs_life, pirates_of_the_carribean, cars);
         };
 
         It should_be_able_to_find_all_movies_not_published_by_pixar = () =>
         {
-            var results = sut.all_movies_not_published_by_pixar();
+            var results = sut.all_movies().all_items_matching(Movie.is_not_published_by(ProductionStudio.Pixar));
 
             results.ShouldNotContain(cars, a_bugs_life);
         };
 
         It should_be_able_to_find_all_movies_published_after_a_certain_year = () =>
         {
-            var results = sut.all_movies_published_after(2004);
+            var results = sut.all_movies().all_items_matching(Movie.is_published_after(2004));
+
 
             results.ShouldContainOnly(the_ring, shrek, theres_something_about_mary);
         };
 
         It should_be_able_to_find_all_movies_published_between_a_certain_range_of_years = () =>
         {
-            var results = sut.all_movies_published_between_years(1982, 2003);
+           var results =  sut.all_movies().all_items_matching(
+                new PredicateCriteria<Movie>(x => x.date_published.Year >= 1982 && x.date_published.Year <= 2003));
 
             results.ShouldContainOnly(indiana_jones_and_the_temple_of_doom, a_bugs_life, pirates_of_the_carribean);
         };
 
         It should_be_able_to_find_all_kid_movies = () =>
         {
-            var results = sut.all_kid_movies();
+            var results = sut.all_movies().all_items_matching(Movie.is_in_genre(Genre.kids));
 
             results.ShouldContainOnly(a_bugs_life, shrek, cars);
         };
 
         It should_be_able_to_find_all_action_movies = () =>
         {
-            var results = sut.all_action_movies();
+            var results = sut.all_movies().all_items_matching(Movie.is_in_genre(Genre.action));
 
             results.ShouldContainOnly(indiana_jones_and_the_temple_of_doom, pirates_of_the_carribean);
         };

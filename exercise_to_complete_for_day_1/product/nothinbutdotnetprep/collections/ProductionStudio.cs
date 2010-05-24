@@ -1,6 +1,7 @@
 namespace nothinbutdotnetprep.collections
 {
-    public class ProductionStudio
+
+    public class ProductionStudio 
     {
         public static readonly ProductionStudio MGM = new ProductionStudio();
         public static readonly ProductionStudio Paramount = new ProductionStudio();

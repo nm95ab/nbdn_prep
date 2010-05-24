@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using nothinbutdotnetprep.utility.searching;
 
 namespace nothinbutdotnetprep.collections
 {
@@ -11,7 +12,7 @@ namespace nothinbutdotnetprep.collections
         public int rating { get; set; }
         public DateTime date_published { get; set; }
         Dictionary<ProductionStudio, int> studioRankings = new Dictionary<ProductionStudio, int>
-            {
+        {
                 {ProductionStudio.MGM, 1},
                 {ProductionStudio.Pixar, 2},
                 {ProductionStudio.Dreamworks, 3},
@@ -55,6 +56,31 @@ namespace nothinbutdotnetprep.collections
             if (other == null) return false;
 
             return ReferenceEquals(this, other) || this.title == other.title;
+        }
+
+        public static Criteria<Movie> is_not_published_by(ProductionStudio studio)
+        {
+            return new NotCriteria<Movie>(new IsPublishedBy(studio));
+        }
+
+        public static Criteria<Movie> is_published_by(ProductionStudio studio)
+        {
+            return new IsPublishedBy(studio);
+        }
+
+        public static Criteria<Movie> is_in_genre(Genre genre)
+        {
+            return new IsInGenre(genre);
+        }
+
+        public static Criteria<Movie> is_published_by_pixar_or_disney()
+        {
+            return new IsPublishedBy(ProductionStudio.Pixar).or(new IsPublishedBy(ProductionStudio.Disney));
+        }
+
+        public static Criteria<Movie> is_published_after(int year)
+        {
+            return new PredicateCriteria<Movie>(movie => movie.date_published > new DateTime(year, 1, 1));
         }
     }
 

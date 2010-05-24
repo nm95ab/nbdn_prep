@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using nothinbutdotnetprep.utility.extensions;
@@ -24,73 +23,6 @@ namespace nothinbutdotnetprep.collections
             if (movies.Contains(movie)) return;
 
             movies.Add(movie);
-        }
-
-        public IEnumerable<Movie> all_movies_not_published_by_pixar()
-        {
-            return all_movies_matching(is_not_published_by_pixar);
-        }
-
-        public static Predicate<Movie> is_not_published_by_pixar
-        {
-            get { return x => x.production_studio != ProductionStudio.Pixar; }
-        }
-
-        public IEnumerable<Movie> all_movies_published_after(int year)
-        {
-            return all_movies_matching(is_published_after(year));
-        }
-
-        Predicate<Movie> is_published_after(int year)
-        {
-            return movie => movie.date_published > new DateTime(year, 1, 1);
-        }
-
-        public IEnumerable<Movie> all_movies_published_between_years(int startingYear, int endingYear)
-        {
-            return all_movies_matching(movie => movie.date_published >= new DateTime(startingYear, 1, 1) &&
-                movie.date_published <= new DateTime(endingYear, 12, 31));
-        }
-
-        public IEnumerable<Movie> all_kid_movies()
-        {
-            return all_movies_matching(is_a_kid_movie());
-        }
-
-        Predicate<Movie> is_a_kid_movie()
-        {
-            return movie => movie.genre == Genre.kids;
-        }
-
-        public IEnumerable<Movie> all_action_movies()
-        {
-            return all_movies_matching(is_an_action_movie());
-        }
-
-        Predicate<Movie> is_in_genre(Genre genre)
-        {
-                 
-        }
-
-        Predicate<Movie> is_an_action_movie()
-        {
-            return movie => movie.genre == Genre.action;
-        }
-
-        public IEnumerable<Movie> all_movies_published_by_pixar()
-        {
-            return all_movies_matching(x => x.production_studio == ProductionStudio.Pixar);
-        }
-
-        public IEnumerable<Movie> all_movies_published_by_pixar_or_disney()
-        {
-            return all_movies_matching(movie => movie.production_studio == ProductionStudio.Pixar ||
-                movie.production_studio == ProductionStudio.Disney);
-        }
-
-        IEnumerable<Movie> all_movies_matching(Predicate<Movie> criteria)
-        {
-            return movies.all_items_matching(criteria);
         }
 
         public IEnumerable<Movie> sort_all_movies_by_title_ascending
