@@ -38,7 +38,7 @@ namespace nothinbutdotnetprep.collections
 
         public IEnumerable<Movie> all_movies_published_after(int year)
         {
-            all_movies_matching(is_published_after(year));
+            return all_movies_matching(is_published_after(year));
         }
 
         Predicate<Movie> is_published_after(int year)
@@ -48,13 +48,13 @@ namespace nothinbutdotnetprep.collections
 
         public IEnumerable<Movie> all_movies_published_between_years(int startingYear, int endingYear)
         {
-            all_movies_matching(movie => movie.date_published >= new DateTime(startingYear, 1, 1) &&
+            return all_movies_matching(movie => movie.date_published >= new DateTime(startingYear, 1, 1) &&
                 movie.date_published <= new DateTime(endingYear, 12, 31));
         }
 
         public IEnumerable<Movie> all_kid_movies()
         {
-            all_movies_matching(is_a_kid_movie());
+            return all_movies_matching(is_a_kid_movie());
         }
 
         Predicate<Movie> is_a_kid_movie()
@@ -64,7 +64,7 @@ namespace nothinbutdotnetprep.collections
 
         public IEnumerable<Movie> all_action_movies()
         {
-            all_movies_matching(is_an_action_movie());
+            return all_movies_matching(is_an_action_movie());
         }
 
         Predicate<Movie> is_in_genre(Genre genre)
@@ -79,12 +79,12 @@ namespace nothinbutdotnetprep.collections
 
         public IEnumerable<Movie> all_movies_published_by_pixar()
         {
-            all_movies_matching(x => x.production_studio == ProductionStudio.Pixar);
+            return all_movies_matching(x => x.production_studio == ProductionStudio.Pixar);
         }
 
         public IEnumerable<Movie> all_movies_published_by_pixar_or_disney()
         {
-            all_movies_matching(movie => movie.production_studio == ProductionStudio.Pixar ||
+            return all_movies_matching(movie => movie.production_studio == ProductionStudio.Pixar ||
                 movie.production_studio == ProductionStudio.Disney);
         }
 
