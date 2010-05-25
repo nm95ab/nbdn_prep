@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Machine.Specifications;
 using Machine.Specifications.DevelopWithPassion.Extensions;
 using Machine.Specifications.DevelopWithPassion.Rhino;
@@ -185,11 +186,9 @@ namespace nothinbutdotnetprep.specs
              * movies using different criteria. Feel free to change/remove explicit methods if you find a way to encompass searching
              * without the need for using explicit methods. For this exercise, no linq queries are allowed!!.*/
 
-  
         It should_be_able_to_find_all_movies_published_by_pixar = () =>
         {
-            var criteria = Where.has_a(x => x.production_studio).equal_to(ProductionStudio.Pixar);
-            var results = sut.all_movies().all_items_matching(criteria);
+            var results = sut.all_movies().all_items_matching(Where<Movie>.has_a(x => x.production_studio).equal_to(ProductionStudio.Pixar));
 
             results.ShouldContainOnly(cars, a_bugs_life);
         };

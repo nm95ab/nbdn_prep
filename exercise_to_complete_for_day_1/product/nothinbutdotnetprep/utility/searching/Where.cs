@@ -1,12 +1,11 @@
-using nothinbutdotnetprep.collections;
-
 namespace nothinbutdotnetprep.utility.searching
 {
-    public delegate ProductionStudio StudioAccessor(Movie movie);
+    public delegate PropertyType PropertyAccessor<ItemToFilter,PropertyType>(ItemToFilter item);
 
-    public class Where
+    public class Where<ItemToFilter>
     {
-        public static StudioAccessor has_a(StudioAccessor accessor)
+        public static PropertyAccessor<ItemToFilter,PropertyType> has_a<PropertyType>(
+            PropertyAccessor<ItemToFilter,PropertyType> accessor)
         {
             return accessor;
         }
