@@ -1,5 +1,6 @@
 obj
 bin
+*.orig
 *.chm
 _[Rr]e[Ss]harper.*
 *.csproj.user
@@ -12,3 +13,4 @@ _[Rr]e[Ss]harper.*
 *.swp
 *.swo
 artifacts/*.*
+artifacts/specs

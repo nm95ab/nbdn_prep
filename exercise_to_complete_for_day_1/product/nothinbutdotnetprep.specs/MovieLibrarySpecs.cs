@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Machine.Specifications;
 using Machine.Specifications.DevelopWithPassion.Extensions;
 using Machine.Specifications.DevelopWithPassion.Rhino;
 using nothinbutdotnetprep.collections;
 using nothinbutdotnetprep.tests.utilIty;
+using nothinbutdotnetprep.utility.extensions;
+using nothinbutdotnetprep.utility.searching;
 
 /* The following set of Contexts (TestFixture) are in place to specify the functionality that you need to complete for the MovieLibrary class.
  * MovieLibrary is an aggregate root for the Movie class. it exposes the ability to search,sort, and iterate over all of the movies that it aggregates.
@@ -47,7 +50,7 @@ using nothinbutdotnetprep.tests.utilIty;
  * Develop With Passion!!
  */
 
-namespace nothinbutdotnetprep.tests
+namespace nothinbutdotnetprep.specs
 {
     public abstract class movie_library_concern : Observes<MovieLibrary>
     {
@@ -65,16 +68,16 @@ namespace nothinbutdotnetprep.tests
     {
         static int number_of_movies;
 
+        //arrange
         Establish c = () =>
             movie_collection.add_all(new Movie(), new Movie());
 
+        //act
         Because b = () =>
             number_of_movies = sut.all_movies().Count();
 
-        It should_return_the_number_of_all_movies_in_the_library = () =>
-        {
-            number_of_movies.ShouldEqual(2);
-        };
+        //assert
+        It should_return_the_number_of_all_movies_in_the_library = () => { number_of_movies.ShouldEqual(2); };
     }
 
     [Subject(typeof(MovieLibrary))]
@@ -82,7 +85,7 @@ namespace nothinbutdotnetprep.tests
     {
         static Movie first_movie;
         static Movie second_movie;
-        static IEnumerable<Movie> all_movies;
+        static IEnumerable<Movie> result;
 
         Establish c = () =>
         {
@@ -92,10 +95,11 @@ namespace nothinbutdotnetprep.tests
             movie_collection.add_all(first_movie, second_movie);
         };
 
-        Because b = () => { all_movies = sut.all_movies(); };
+        Because b = () =>
+            result = sut.all_movies();
 
-        It should_receive_a_set_containing_each_movie_in_the_library =
-            () => { all_movies.ShouldContainOnly(first_movie, second_movie); };
+        It should_receive_a_set_containing_each_movie_in_the_library = () =>
+            result.ShouldContainOnly(first_movie, second_movie);
     }
 
     [Subject(typeof(MovieLibrary))]
@@ -184,49 +188,54 @@ namespace nothinbutdotnetprep.tests
 
         It should_be_able_to_find_all_movies_published_by_pixar = () =>
         {
-            var results = sut.all_movies_published_by_pixar();
+            var results = sut.all_movies().all_items_matching(Where<Movie>.has_a(x => x.production_studio).equal_to(ProductionStudio.Pixar));
 
             results.ShouldContainOnly(cars, a_bugs_life);
         };
 
         It should_be_able_to_find_all_movies_published_by_pixar_or_disney = () =>
         {
-            var results = sut.all_movies_published_by_pixar_or_disney();
+            var criteria = Where<Movie>.has_a(x => x.production_studio).equal_to_any(ProductionStudio.Pixar,
+                                                                                     ProductionStudio.Disney);
+            var results = sut.all_movies().all_items_matching(criteria);
 
             results.ShouldContainOnly(a_bugs_life, pirates_of_the_carribean, cars);
         };
 
         It should_be_able_to_find_all_movies_not_published_by_pixar = () =>
         {
-            var results = sut.all_movies_not_published_by_pixar();
+            var criteria = Where<Movie>.has_a(x => x.production_studio).not_equal_to(ProductionStudio.Pixar);
+                                                                       
+            var results = sut.all_movies().all_items_matching(Movie.is_not_published_by(ProductionStudio.Pixar));
 
             results.ShouldNotContain(cars, a_bugs_life);
         };
 
         It should_be_able_to_find_all_movies_published_after_a_certain_year = () =>
         {
-            var results = sut.all_movies_published_after(2004);
+            var results = sut.all_movies().all_items_matching(Movie.is_published_after(2004));
 
             results.ShouldContainOnly(the_ring, shrek, theres_something_about_mary);
         };
 
         It should_be_able_to_find_all_movies_published_between_a_certain_range_of_years = () =>
         {
-            var results = sut.all_movies_published_between_years(1982, 2003);
+           var results =  sut.all_movies().all_items_matching(
+                new PredicateCriteria<Movie>(x => x.date_published.Year >= 1982 && x.date_published.Year <= 2003));
 
             results.ShouldContainOnly(indiana_jones_and_the_temple_of_doom, a_bugs_life, pirates_of_the_carribean);
         };
 
         It should_be_able_to_find_all_kid_movies = () =>
         {
-            var results = sut.all_kid_movies();
+            var results = sut.all_movies().all_items_matching(Movie.is_in_genre(Genre.kids));
 
             results.ShouldContainOnly(a_bugs_life, shrek, cars);
         };
 
         It should_be_able_to_find_all_action_movies = () =>
         {
-            var results = sut.all_action_movies();
+            var results = sut.all_movies().all_items_matching(Movie.is_in_genre(Genre.action));
 
             results.ShouldContainOnly(indiana_jones_and_the_temple_of_doom, pirates_of_the_carribean);
         };
