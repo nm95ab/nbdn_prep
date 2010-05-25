@@ -46,7 +46,6 @@
     <Compile Include="collections\MovieLibrary.cs" />
     <Compile Include="collections\ProductionStudio.cs" />
     <Compile Include="utility\extensions\EnumerableExtensions.cs" />
-    <Compile Include="utility\searching\AccessorExtensions.cs" />
     <Compile Include="utility\searching\AndCriteria.cs" />
     <Compile Include="utility\searching\BinaryCriteria.cs" />
     <Compile Include="utility\searching\Criteria.cs" />
