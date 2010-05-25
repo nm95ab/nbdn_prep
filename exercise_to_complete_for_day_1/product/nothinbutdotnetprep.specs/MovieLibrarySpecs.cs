@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Machine.Specifications;
 using Machine.Specifications.DevelopWithPassion.Extensions;
 using Machine.Specifications.DevelopWithPassion.Rhino;
@@ -185,27 +186,9 @@ namespace nothinbutdotnetprep.specs
              * movies using different criteria. Feel free to change/remove explicit methods if you find a way to encompass searching
              * without the need for using explicit methods. For this exercise, no linq queries are allowed!!.*/
 
-        public delegate void MessageGenerator(string message);
-
-        It should_play_around_with_delegates = () =>
-        {
-            MessageGenerator hello = delegate { Console.Out.Write("Hello "); };
-            hello += x => Console.Out.Write("{0} ",x.ToUpper());
-            hello += x => Console.Out.Write("{0} ",x.ToLower());
-
-            Predicate<Movie> is_a_kids_movie = movie => movie.genre == Genre.kids;
-            is_a_kids_movie(new Movie {genre = Genre.action}).ShouldBeFalse();
-            is_a_kids_movie(new Movie {genre = Genre.kids}).ShouldBeTrue();
-
-            hello("JP");
-
-            //Hello JP jp
-        };
-  
         It should_be_able_to_find_all_movies_published_by_pixar = () =>
         {
-            var criteria = Where<Movie>.has_a(x => x.production_studio).equal_to(ProductionStudio.Pixar);
-            var results = sut.all_movies().all_items_matching(criteria);
+            var results = sut.all_movies().all_items_matching(Where<Movie>.has_a(x => x.production_studio).equal_to(ProductionStudio.Pixar));
 
             results.ShouldContainOnly(cars, a_bugs_life);
         };
