@@ -57,6 +57,9 @@ namespace nothinbutdotnetprep.collections
         }
     }
 
+
+
+
     public class MovieComparer : IComparer<Movie>
     {
         public ComparisonType ComparisonType { get; set; }

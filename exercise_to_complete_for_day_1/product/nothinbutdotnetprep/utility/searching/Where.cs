@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace nothinbutdotnetprep.utility.searching
 {
-    public delegate PropertyType PropertyAccessor<ItemToFilter,PropertyType>(ItemToFilter item);
+    public delegate PropertyType  PropertyAccessor<ItemToFilter,PropertyType>(ItemToFilter item);
 
     public class Where<ItemToFilter>
     {
@@ -13,7 +14,6 @@ namespace nothinbutdotnetprep.utility.searching
           
             return new CriteriaFactory<ItemToFilter, PropertyType>(accessor);
         }
-
         
       }
 
@@ -26,28 +26,39 @@ namespace nothinbutdotnetprep.utility.searching
             this.accessor = accessor;
         }
 
-        public PredicateCriteria<ItemToFilter> equal_to(PropertyType propertyValue)
+        public Criteria<ItemToFilter> equal_to(PropertyType propertyValue)
         {
             return new PredicateCriteria<ItemToFilter>(x => accessor(x).Equals(propertyValue));
         }
 
-        public PredicateCriteria<ItemToFilter> not_equal_to(PropertyType propertyValue)
+        public Criteria<ItemToFilter> not_equal_to(PropertyType propertyValue)
         {
-            return new PredicateCriteria<ItemToFilter>(x => !accessor(x).Equals(propertyValue));
+            return new NotCriteria<ItemToFilter>(equal_to(propertyValue));
         }
-        /*
-        public PredicateCriteria<ItemToFilter> equal_to_any(PropertyType[] propertyValues)
+
+        public Criteria<ItemToFilter> after(int propertyValue)
+        {
+
+            return new PredicateCriteria<ItemToFilter>(x => (DateTime.Parse(accessor(x).ToString())).Year > propertyValue);
+        }
+
+        public Criteria<ItemToFilter> between(int start,int end)
+        {
+            return new PredicateCriteria<ItemToFilter>(x => (DateTime.Parse(accessor(x).ToString())).Year >= start && (DateTime.Parse(accessor(x).ToString())).Year < end);
+        }
+
+        public Criteria<ItemToFilter> equal_to_any(params PropertyType[] propertyValues)
         {
             return new PredicateCriteria<ItemToFilter>(x =>
-            {
-                foreach (var propertyValue in propertyValues)
-                {
-                    if (accessor(x).Equals(propertyValue))
-                        break;
-                }
-                
-            });
+                                                           {
+                                                               return
+                                                                   new List<PropertyType>(propertyValues).Contains(
+                                                                       accessor(x));
+
+                                                           });
+            
+           
         }
-         * */
+   
     }
 }
